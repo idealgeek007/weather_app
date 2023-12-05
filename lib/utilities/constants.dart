@@ -35,3 +35,5 @@ const kTextFieldDecoration = InputDecoration(
         Radius.circular(30.0),
       ),
     ));
+
+String? bgimage;

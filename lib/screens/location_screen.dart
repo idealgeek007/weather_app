@@ -19,6 +19,8 @@ class _LocationScreenState extends State<LocationScreen> {
   int? condition;
   String? weatherIcon;
   String? weatherMessage;
+  String? time;
+
   @override
   void initState() {
     super.initState();
@@ -36,11 +38,26 @@ class _LocationScreenState extends State<LocationScreen> {
         return;
       }
       double temperature = weatherData['current']['temp_c'];
+      time = weatherData['location']['localtime'];
+
       temp = temperature.toInt();
       condition = weatherData['current']['condition']['code'];
       cityName = weatherData['location']['name'];
       weatherIcon = weather.getWeatherIcon(condition!);
       weatherMessage = weather.getMessage(temp!);
+
+      DateTime dateTime = DateTime.parse(time!);
+
+      // Extract the hours
+      int timehrs = dateTime.hour;
+
+      if (timehrs >= 0 && timehrs <= 5) {
+        bgimage = 'night.png';
+      } else if (timehrs >= 6 && timehrs <= 17) {
+        bgimage = 'day.png';
+      } else if (timehrs >= 18 && timehrs <= 23) {
+        bgimage = 'night.png';
+      }
     });
   }
 
@@ -50,7 +67,7 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/location_background.jpg'),
+            image: AssetImage('images/$bgimage'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.white.withOpacity(0.8), BlendMode.dstATop),

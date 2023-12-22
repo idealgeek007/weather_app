@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:weather_app/utilities/constants.dart';
 
@@ -12,42 +13,59 @@ class _CityScreenState extends State<CityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/cityimage.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        constraints: BoxConstraints.expand(),
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topLeft,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 50.0,
-                  ),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topLeft,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: SvgPicture.asset(
+                  'Icons/back.svg',
+                  height: 50,
+                  width: 50,
+                  color: Colors.white,
                 ),
               ),
-              Container(
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
                 padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  decoration: kTextFieldDecoration,
-                  onChanged: (value) {
-                    cityName = value;
-                  },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SvgPicture.asset(
+                        'Icons/city.svg',
+                        height: 30,
+                        width: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: TextField(
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        decoration: kTextFieldDecoration,
+                        onChanged: (value) {
+                          cityName = value;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              TextButton(
+            ),
+            Expanded(
+              flex: 5,
+              child: TextButton(
                 onPressed: () {
                   Navigator.pop(context, cityName);
                 },
@@ -56,8 +74,8 @@ class _CityScreenState extends State<CityScreen> {
                   style: kButtonTextStyle.copyWith(color: Colors.white),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

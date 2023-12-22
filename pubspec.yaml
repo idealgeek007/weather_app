@@ -2,7 +2,7 @@ name: weather_app
 description: Weather app
 
 
-publish_to: 'none' 
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -19,6 +19,7 @@ dependencies:
   http: ^1.1.0
   flutter_spinkit: ^5.2.0
   permission_handler: ^11.0.1
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -31,10 +32,11 @@ flutter:
   uses-material-design: true
   assets:
     - images/
+    - Icons/
 
   fonts:
     - family: Spartan MB
       fonts:
         - asset: fonts/SpartanMB-Black.otf
           weight: 900
-  
+

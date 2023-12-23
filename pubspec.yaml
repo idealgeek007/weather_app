@@ -20,6 +20,7 @@ dependencies:
   flutter_spinkit: ^5.2.0
   permission_handler: ^11.0.1
   flutter_svg: ^2.0.9
+  fluttertoast: ^8.2.4
 
 dev_dependencies:
   flutter_test:
@@ -35,8 +36,13 @@ flutter:
     - Icons/
 
   fonts:
-    - family: Spartan MB
+    - family: Metropolis
       fonts:
-        - asset: fonts/SpartanMB-Black.otf
-          weight: 900
+        - asset: fonts/Metropolis-Regular.otf
+        - asset: fonts/Metropolis-Light.otf
+        - asset: fonts/Metropolis-Black.otf
+        - asset: fonts/Metropolis-Thin.otf
+        - asset: fonts/Metropolis-SemiBold.otf
+        - asset: fonts/Metropolis-Medium.otf
+
 

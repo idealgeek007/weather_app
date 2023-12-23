@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 
 const kTempTextStyle = TextStyle(
-  fontFamily: 'Spartan MB',
-  fontSize: 100.0,
+  fontFamily: 'Metropolis',
+  fontSize: 156.0,
 );
 
 const kMessageTextStyle = TextStyle(
-  fontFamily: 'Spartan MB',
-  fontSize: 60.0,
+  fontFamily: 'Metropolis',
+  fontSize: 24.0,
 );
 
-const kButtonTextStyle = TextStyle(
-  fontSize: 30.0,
-  fontFamily: 'Spartan MB',
-);
-
-const kConditionTextStyle = TextStyle(
-  fontSize: 100.0,
+const kLargeTextStyle = TextStyle(
+  fontSize: 72.0,
+  fontFamily: 'Metropolis',
 );
 
 const kTextFieldDecoration = InputDecoration(
@@ -31,5 +27,5 @@ const kTextFieldDecoration = InputDecoration(
         Radius.circular(30.0),
       ),
     ));
-
+BorderRadius kborderRadius = BorderRadius.circular(15.0);
 String? bgimage;

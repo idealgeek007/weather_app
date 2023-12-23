@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:weather_app/frostedEffect.dart';
 import 'package:weather_app/screens/city_screen.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/utilities/constants.dart';
@@ -15,6 +16,8 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weather = WeatherModel();
+  final GlobalKey _columnKey = GlobalKey();
+
   int? temp;
   String? cityName;
   String? condition;
@@ -27,10 +30,14 @@ class _LocationScreenState extends State<LocationScreen> {
   int? rain;
   late String iconUrl;
   late String modifiedUrl;
+  var screenSize;
+  late double deviceWidth;
+  late int isDay;
+  late String bgimage;
+
   @override
   void initState() {
     super.initState();
-
     updateUI(widget.locationWeather);
   }
 
@@ -41,6 +48,13 @@ class _LocationScreenState extends State<LocationScreen> {
         weatherIcon = 'Error';
         weatherMessage = 'Unable to get weather data';
         cityName = '';
+        windspeed = 0;
+        rain = 0;
+        humidity = 0;
+        localtime = '';
+        condition = 'Not Found';
+        showWeatherDataNotFoundPopup();
+
         return;
       }
       double temperature = weatherData['current']['temp_c'];
@@ -56,20 +70,35 @@ class _LocationScreenState extends State<LocationScreen> {
           ['daily_chance_of_rain'];
       iconUrl = weatherData['current']['condition']['icon'];
       modifiedUrl = iconUrl.replaceFirst('64x64', '128x128');
-
+      isDay = weatherData['current']['is_day'];
       if (rain == null) {
         rain = 0;
+      }
+
+      if (isDay == 1) {
+        bgimage = 'images/day.png';
+      } else {
+        bgimage = 'images/bgimage.png';
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
+
+    // Get the device width
+    deviceWidth = screenSize.width;
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
       body: Container(
-        child: SafeArea(
-          child: Column(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(bgimage),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Expanded(
+          child: ListView(
             children: <Widget>[
               Expanded(
                 flex: 1,
@@ -84,9 +113,10 @@ class _LocationScreenState extends State<LocationScreen> {
                           var weatherData = await weather.getLocationWeather();
                           updateUI(weatherData);
                         },
-                        icon: Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.white,
+                        icon: SvgPicture.asset(
+                          'Icons/location.svg',
+                          height: 50,
+                          width: 50,
                         ),
                       ),
                     ),
@@ -102,39 +132,39 @@ class _LocationScreenState extends State<LocationScreen> {
                               },
                             ),
                           );
+                          if (typedName != null) {
+                            var weatherData =
+                                await weather.getCityWeather(typedName);
+                            updateUI(weatherData);
+                          }
                         },
-                        icon: Icon(
-                          Icons.search,
-                        ),
-                        color: Colors.white,
+                        icon: SvgPicture.asset('Icons/search.svg'),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
               Expanded(
-                flex: 8,
+                flex: 6,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
                   child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    child: FrostedEffect(
+                      500,
+                      deviceWidth,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             '$cityName',
-                            style: TextStyle(
-                              fontSize: 64.0,
-                            ),
+                            style: kLargeTextStyle,
                           ),
-                          Text(
-                            '$localtime ', // TODO Time
-                            style: TextStyle(fontSize: 16.0),
-                          ),
+                          Text('$localtime ', // TODO Time
+                              style:
+                                  kMessageTextStyle.copyWith(fontSize: 18.0)),
                           SizedBox(
-                            height: 180.0,
+                            height: 50.0,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,9 +174,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                 padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
                                 child: Text(
                                   '$temp', //TODO Temperature data
-                                  style: TextStyle(
-                                    fontSize: 128.0,
-                                  ),
+                                  style: kTempTextStyle,
                                 ),
                               ),
                               Padding(
@@ -159,87 +187,134 @@ class _LocationScreenState extends State<LocationScreen> {
                               SizedBox(
                                 height: 30,
                               ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                                child: Text(
+                                  'C',
+                                  style: kTempTextStyle.copyWith(fontSize: 78),
+                                ),
+                              )
                             ],
                           ),
                           SizedBox(
                             height: 20.0,
                           ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                /* Image.network(
-                                  'http:$modifiedUrl', // Replace with your image URL
-                                  width: 100.0, // Set the width of the image
-                                  height: 100.0,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    } else {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ), */ // TODO Weather Icon
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: Text(
-                                    '$condition',
-                                    style: TextStyle(
-                                      fontSize: 24.0,
-                                    ),
-                                  ),
-                                )
-                              ]),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Divider(
-                            color: Colors.grey, // Choose the color of your line
-                            thickness: 1.0, // Set the thickness of the line
-                            height: 40.0, // Set the height of the line
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              BottomValuesIndiacator(
-                                text: 'Wind',
-                                iconname: 'Icons/wind.svg',
-                                value: '$windspeed km/h',
-                              ),
-                              BottomValuesIndiacator(
-                                  text: 'Rain',
-                                  iconname: 'Icons/rain.svg',
-                                  value: '$rain %'),
-                              BottomValuesIndiacator(
-                                  text: 'Humidity',
-                                  iconname: 'Icons/humidity.svg',
-                                  value: '$humidity %')
-                            ],
-                          )
+                          Text('$condition',
+                              style: kMessageTextStyle.copyWith(fontSize: 48)),
                         ],
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+                child: Divider(
+                  color: Colors.white,
+                  thickness: 1.0,
+                  indent: 10.0,
+                  endIndent: 10.0,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    BottomValuesIndiacator(
+                      text: 'Wind',
+                      iconname: 'Icons/wind.svg',
+                      value: '$windspeed km/h',
+                    ),
+                    BottomValuesIndiacator(
+                      text: 'Rain',
+                      iconname: 'Icons/rain.svg',
+                      value: '$rain %',
+                    ),
+                    BottomValuesIndiacator(
+                      text: 'Humidity',
+                      iconname: 'Icons/humidity.svg',
+                      value: '$humidity %',
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showWeatherDataNotFoundPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Weather Data Not Found"),
+          content: Text("Please check the city entered."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Optionally, you can add code to handle this situation
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Your existing BottomValuesIndiacator class...
+
+class BottomValuesIndiacator extends StatelessWidget {
+  String text;
+  String value;
+  String iconname;
+  BottomValuesIndiacator({
+    super.key,
+    required this.text,
+    required this.iconname,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FrostedEffect(
+      200,
+      150,
+      Container(
+        width: 150,
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                text,
+                style: kMessageTextStyle,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SvgPicture.asset(
+                iconname,
+                height: 40,
+                width: 40,
+                color: Colors.white,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                value,
+                style: kMessageTextStyle,
+              ),
             ],
           ),
         ),
@@ -247,40 +322,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-class BottomValuesIndiacator extends StatelessWidget {
-  String text;
-  String value;
-  String iconname;
-  BottomValuesIndiacator(
-      {super.key,
-      required this.text,
-      required this.iconname,
-      required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(text),
-        SizedBox(
-          height: 20,
-        ),
-        SvgPicture.asset(
-          iconname,
-          height: 40,
-          width: 40,
-          color: Colors.white,
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(value),
-      ],
-    );
-  }
-}
-
-/*
-
-*/

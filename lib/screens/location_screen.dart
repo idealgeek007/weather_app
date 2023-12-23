@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:weather_app/frostedEffect.dart';
 import 'package:weather_app/screens/city_screen.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/utilities/constants.dart';
@@ -15,6 +18,8 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weather = WeatherModel();
+  final GlobalKey _columnKey = GlobalKey();
+
   int? temp;
   String? cityName;
   String? condition;
@@ -27,10 +32,12 @@ class _LocationScreenState extends State<LocationScreen> {
   int? rain;
   late String iconUrl;
   late String modifiedUrl;
+  var screenSize;
+  late double deviceWidth;
+
   @override
   void initState() {
     super.initState();
-
     updateUI(widget.locationWeather);
   }
 
@@ -65,11 +72,18 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
+
+    // Get the device width
+    deviceWidth = screenSize.width;
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: Container(
+        decoration: BoxDecoration(color: Colors.blueAccent),
         child: SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
                 flex: 1,
@@ -86,6 +100,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         },
                         icon: Icon(
                           Icons.location_on_outlined,
+                          size: 40,
                           color: Colors.white,
                         ),
                       ),
@@ -105,36 +120,36 @@ class _LocationScreenState extends State<LocationScreen> {
                         },
                         icon: Icon(
                           Icons.search,
+                          size: 40,
                         ),
                         color: Colors.white,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
               Expanded(
-                flex: 8,
+                flex: 6,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
                   child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    child: FrostedEffect(
+                      50,
+                      deviceWidth,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             '$cityName',
-                            style: TextStyle(
-                              fontSize: 64.0,
-                            ),
+                            style: kLargeTextStyle,
                           ),
                           Text(
                             '$localtime ', // TODO Time
                             style: TextStyle(fontSize: 16.0),
                           ),
                           SizedBox(
-                            height: 180.0,
+                            height: 50.0,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,82 +179,51 @@ class _LocationScreenState extends State<LocationScreen> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                /* Image.network(
-                                  'http:$modifiedUrl', // Replace with your image URL
-                                  width: 100.0, // Set the width of the image
-                                  height: 100.0,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    } else {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ), */ // TODO Weather Icon
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: Text(
-                                    '$condition',
-                                    style: TextStyle(
-                                      fontSize: 24.0,
-                                    ),
-                                  ),
-                                )
-                              ]),
-                          SizedBox(
-                            height: 20.0,
+                          Text(
+                            '$condition',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                            ),
                           ),
-                          Divider(
-                            color: Colors.grey, // Choose the color of your line
-                            thickness: 1.0, // Set the thickness of the line
-                            height: 40.0, // Set the height of the line
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              BottomValuesIndiacator(
-                                text: 'Wind',
-                                iconname: 'Icons/wind.svg',
-                                value: '$windspeed km/h',
-                              ),
-                              BottomValuesIndiacator(
-                                  text: 'Rain',
-                                  iconname: 'Icons/rain.svg',
-                                  value: '$rain %'),
-                              BottomValuesIndiacator(
-                                  text: 'Humidity',
-                                  iconname: 'Icons/humidity.svg',
-                                  value: '$humidity %')
-                            ],
-                          )
                         ],
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
+              Divider(
+                color: Colors.grey,
+                thickness: 1.0,
+                indent: 10.0,
+                endIndent: 10.0,
+              ),
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      BottomValuesIndiacator(
+                        text: 'Wind',
+                        iconname: 'Icons/wind.svg',
+                        value: '$windspeed km/h',
+                      ),
+                      BottomValuesIndiacator(
+                        text: 'Rain',
+                        iconname: 'Icons/rain.svg',
+                        value: '$rain %',
+                      ),
+                      BottomValuesIndiacator(
+                        text: 'Humidity',
+                        iconname: 'Icons/humidity.svg',
+                        value: '$humidity %',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -252,35 +236,50 @@ class BottomValuesIndiacator extends StatelessWidget {
   String text;
   String value;
   String iconname;
-  BottomValuesIndiacator(
-      {super.key,
-      required this.text,
-      required this.iconname,
-      required this.value});
+  BottomValuesIndiacator({
+    super.key,
+    required this.text,
+    required this.iconname,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(text),
-        SizedBox(
-          height: 20,
+    return FrostedEffect(
+      200,
+      150,
+      Container(
+        width: 150,
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                text,
+                style: kMessageTextStyle,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SvgPicture.asset(
+                iconname,
+                height: 40,
+                width: 40,
+                color: Colors.white,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                value,
+                style: kMessageTextStyle,
+              ),
+            ],
+          ),
         ),
-        SvgPicture.asset(
-          iconname,
-          height: 40,
-          width: 40,
-          color: Colors.white,
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(value),
-      ],
+      ),
     );
   }
 }
-
-/*
-
-*/

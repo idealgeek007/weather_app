@@ -34,7 +34,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void getLocation() async {
     var weatherData = await WeatherModel().getLocationWeather();
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) {
@@ -53,7 +53,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       body: Center(
         child: SpinKitDualRing(
           color: Colors.blue,
-          size: 100.0,
+          size: 50.0,
         ),
       ),
     );

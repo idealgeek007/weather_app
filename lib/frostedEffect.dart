@@ -14,6 +14,7 @@ class FrostedEffect extends StatelessWidget {
     return ClipRRect(
       borderRadius: kborderRadius,
       child: Container(
+          color: Colors.black.withOpacity(0.2),
           width: width1,
           height: height1,
           child: Stack(children: [
@@ -25,7 +26,7 @@ class FrostedEffect extends StatelessWidget {
                 child: Container()),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
+                border: Border.all(color: Colors.white.withOpacity(.3)),
                 borderRadius: kborderRadius,
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,

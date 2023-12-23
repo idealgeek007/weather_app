@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 
 const kTempTextStyle = TextStyle(
-  fontFamily: 'Metropolis-Regular',
-  fontSize: 100.0,
+  fontFamily: 'Metropolis',
+  fontSize: 156.0,
 );
 
 const kMessageTextStyle = TextStyle(
-  fontFamily: 'Metropolis-Regular',
+  fontFamily: 'Metropolis',
   fontSize: 24.0,
 );
 
 const kLargeTextStyle = TextStyle(
-  fontSize: 48.0,
-  fontFamily: 'Metropolis-Regular',
-);
-
-const kConditionTextStyle = TextStyle(
-  fontSize: 100.0,
+  fontSize: 72.0,
+  fontFamily: 'Metropolis',
 );
 
 const kTextFieldDecoration = InputDecoration(

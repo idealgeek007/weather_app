@@ -17,6 +17,7 @@ class _CityScreenState extends State<CityScreen> {
     double deviceWidth = screenSize.width;
     double deviceHeight = screenSize.height;
     return Scaffold(
+      backgroundColor: Colors.blueAccent,
       body: FrostedEffect(
         deviceHeight,
         deviceWidth,
@@ -41,47 +42,47 @@ class _CityScreenState extends State<CityScreen> {
                 ),
               ),
               Container(
-                child: Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: SvgPicture.asset(
-                          'Icons/city.svg',
-                          height: 30,
-                          width: 30,
-                          color: Colors.white,
-                        ),
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SvgPicture.asset(
+                        'Icons/city.svg',
+                        height: 30,
+                        width: 30,
+                        color: Colors.white,
                       ),
-                      Expanded(
-                        flex: 5,
-                        child: TextField(
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          decoration: kTextFieldDecoration,
-                          onChanged: (value) {
-                            cityName = value;
-                          },
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: TextField(
+                        style: TextStyle(
+                          color: Colors.black,
                         ),
+                        decoration: kTextFieldDecoration,
+                        onChanged: (value) {
+                          cityName = value;
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Container(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 0, 0, 0),
                 child: Container(
-                  height: 100,
+                  height: 200,
                   child: TextButton(
                     onPressed: () {
                       Navigator.pop(context, cityName);
                     },
                     child: Text(
                       'GET WEATHER',
-                      style: kLargeTextStyle.copyWith(color: Colors.white),
+                      style: kLargeTextStyle.copyWith(
+                          color: Colors.white, fontSize: 48),
                     ),
                   ),
                 ),
